@@ -1,2 +1,133 @@
-/* For information on how to create your own theme, please refer to:
-http://ionicframework.com/docs/theming/ */
+/* ==========================
+   FORCE FULL LIGHT MODE
+   ========================== */
+
+:root {
+  color-scheme: light;
+
+  /* Global light colors */
+  --ion-background-color: #ffffff;
+  --ion-background-color-rgb: 255, 255, 255;
+
+  --ion-text-color: #000000;
+  --ion-text-color-rgb: 0, 0, 0;
+
+  /* Ensure items & toolbars stay light */
+  --ion-item-background: #ffffff;
+  --ion-toolbar-background: #ffffff;
+  --ion-tab-bar-background: #ffffff;
+
+  /* Optional better color steps */
+  --ion-color-step-50: #f7f7f7;
+  --ion-color-step-100: #efefef;
+  --ion-color-step-400: #cccccc;
+  --ion-color-step-850: #555555;
+}
+
+/* Prevent dark theme applying from OS */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-background-color: #ffffff !important;
+    --ion-text-color: #000000 !important;
+  }
+}
+
+
+/* ================================================
+   FIX ALL OVERLAYS (MODALS, POPOVERS, SELECTS)
+   ================================================ */
+
+/* Modals */
+ion-modal {
+  --background: #ffffff !important;
+  --ion-background-color: #ffffff !important;
+  --color: #000000 !important;
+}
+
+/* Modal wrapper (Android) */
+.modal-wrapper {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Your custom modal class */
+.my-fullscreen-modal {
+  --background: #ffffff !important;
+  --ion-background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+
+/* Popovers (used by IonSelect with interface="popover") */
+ion-popover {
+  --background: #ffffff !important;
+  --ion-background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Popover content list */
+ion-select-popover,
+ion-list,
+ion-item,
+ion-select-option {
+  --background: #ffffff !important;
+  --ion-background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+
+/* ================================================
+   INPUTS: IonInput / native <input>
+   ================================================ */
+input,
+ion-input {
+  --color: #000000 !important;
+  color: #000000 !important;
+  background-color: #ffffff !important;
+}
+
+
+/* ================================================
+   TOASTS
+   ================================================ */
+ion-toast {
+  --background: #ffffff !important;
+  --color: #000000 !important;
+}
+
+
+/* ================================================
+   ALERTS (if you use them later)
+   ================================================ */
+ion-alert {
+  --background: #ffffff !important;
+  --ion-background-color: #ffffff !important;
+  --color: #000000 !important;
+}
+
+
+/* Change text + placeholder color for IonInput (especially type="date") */
+.date-input {
+  --color: red !important;               /* Text color */
+  --placeholder-color: red !important;   /* Placeholder color */
+  --placeholder-opacity: 1 !important;
+}
+
+/* iOS & Android browser-specific placeholder styling */
+.date-input::part(native) {
+  color: red !important;
+}
+
+.date-input::part(native)::placeholder {
+  color: red !important;
+  opacity: 1 !important;
+}
+
+
+ ion-tab-bar {
+  --background: #d0e7ff; /* blue */
+  --color: #222;       
+  /* --color-selected: #ffffff; */
+} 
+
+

@@ -1,9 +1,16 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'myApp',
-  webDir: 'dist'
+  appId: 'com.maco.experts',
+  appName: 'MACO',
+  webDir: 'dist',
+  bundledWebRuntime: false, // recommended
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 3000
+    }
+  }
 };
+
 
 export default config;

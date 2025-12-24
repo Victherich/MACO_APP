@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MACO</string>
+    <string name="title_activity_main">MACO</string>
+    <string name="package_name">com.maco.experts</string>
+    <string name="custom_url_scheme">com.maco.experts</string>
+</resources>
