@@ -70,8 +70,8 @@ const Splash: React.FC = () => {
       <IonContent fullscreen>
         <Container>
           <LogoImage src={Logo} alt="App Logo" />
-          <Title>MACO</Title>
-          <Subtitle>Shine like never before!</Subtitle>
+          <Title>WELCOME TO MACO</Title>
+          {/* <Subtitle>Shine like never before!</Subtitle> */}
           <StartButton onClick={goToMain}>Get Started</StartButton>
         </Container>
       </IonContent>

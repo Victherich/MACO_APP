@@ -132,67 +132,65 @@ const Contact: React.FC = () => {
     }
   };
 
-  return (
-    <IonPage>
-    <Header title="Contact Us"/>
-      <IonContent fullscreen>
-          
-        <Container>
-          <Hero>
-            <LogoImage src={Logo} alt="Logo" />
-            <HeroSubtitle>We’d love to hear from you!</HeroSubtitle>
-          </Hero>
+return (
+  <IonPage>
+    <Header title="Contact Us" />
 
-          <FormSection>
-            <FormTitle>Send Us a Message</FormTitle>
+    <IonContent fullscreen>
+      <Container>
 
-            <IonItem>
-              {/* <IonLabel position="stacked">Your Name</IonLabel> */}
-              <Input
-                value={formData.name}
-                onIonChange={(e) => handleChange('name', e.detail.value)}
-                placeholder="Your Name"
-              />
-            </IonItem>
+        <Hero>
+          <LogoImage src={Logo} alt="Logo" />
+          <HeroSubtitle>Contact Information and Support</HeroSubtitle>
+        </Hero>
 
-            <IonItem>
-              {/* <IonLabel position="stacked">Your Email</IonLabel> */}
-              <Input
-                type="email"
-                value={formData.email}
-                onIonChange={(e) => handleChange('email', e.detail.value)}
-                placeholder="Your Email"
-              />
-            </IonItem>
+        <FormSection>
+          <FormTitle>Contact Form</FormTitle>
 
-            <IonItem>
-              {/* <IonLabel position="stacked">Your Phone</IonLabel> */}
-              <Input
-                type="tel"
-                value={formData.phone}
-                onIonChange={(e) => handleChange('phone', e.detail.value)}
-                placeholder="Your Phone"
-              />
-            </IonItem>
+          <IonItem>
+            <Input
+              value={formData.name}
+              onIonChange={(e) => handleChange('name', e.detail.value)}
+              placeholder="Name"
+            />
+          </IonItem>
 
-            <IonItem>
-              {/* <IonLabel position="stacked">Your Message</IonLabel> */}
-              <Textarea
-                value={formData.message}
-                onIonChange={(e) => handleChange('message', e.detail.value)}
-                placeholder="Your Message"
-              />
-            </IonItem>
+          <IonItem>
+            <Input
+              type="email"
+              value={formData.email}
+              onIonChange={(e) => handleChange('email', e.detail.value)}
+              placeholder="Email"
+            />
+          </IonItem>
 
-            <Button onClick={handleSubmit} disabled={loading}>
-              {loading ? <IonSpinner name="crescent" /> : 'Send Message'}
-            </Button>
-          </FormSection>
-        </Container>
+          <IonItem>
+            <Input
+              type="tel"
+              value={formData.phone}
+              onIonChange={(e) => handleChange('phone', e.detail.value)}
+              placeholder="Phone Number"
+            />
+          </IonItem>
 
-      </IonContent>
-    </IonPage>
-  );
+          <IonItem>
+            <Textarea
+              value={formData.message}
+              onIonChange={(e) => handleChange('message', e.detail.value)}
+              placeholder="Message"
+            />
+          </IonItem>
+
+          <Button onClick={handleSubmit} disabled={loading}>
+            {loading ? <IonSpinner name="crescent" /> : 'Submit'}
+          </Button>
+        </FormSection>
+
+      </Container>
+    </IonContent>
+  </IonPage>
+);
+
 };
 
 export default Contact;

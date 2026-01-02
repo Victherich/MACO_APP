@@ -53,91 +53,75 @@ const ContactItem = styled.p`
 `;
 
 const AboutPage: React.FC = () => {
-  return (
-    <IonPage>
-   <Header title="About MACO"/>
+return (
+  <IonPage>
+    <Header title="About MACO" />
 
-      <IonContent fullscreen>
-        <Container>
+    <IonContent fullscreen>
+      <Container>
 
-          <SectionTitle>Welcome to MACO</SectionTitle>
+        <SectionTitle>Welcome to MACO</SectionTitle>
 
-          <Paragraph>
-            At <Highlight>MACO</Highlight>, we specialize in delivering premium 
-            <Highlight> car wash</Highlight>, 
-            <Highlight> home cleaning</Highlight>, and 
-            <Highlight> maintenance services</Highlight> across 
-            <strong> Dubai, UAE</strong>.  
-          </Paragraph>
+        <Paragraph>
+          <Highlight>MACO</Highlight> provides
+          <Highlight> car wash</Highlight>,
+          <Highlight> home cleaning</Highlight>, and
+          <Highlight> maintenance services</Highlight> in
+          <strong> Dubai, UAE</strong>.
+        </Paragraph>
 
-          <Paragraph>
-            Our goal is simple: <strong>to make your daily life easier, cleaner, and stress-free.</strong>  
-            Whether it’s your home, car, apartment, villa, or workspace — we are committed to providing the 
-            <Highlight> highest quality service</Highlight> with unmatched professionalism.
-          </Paragraph>
+        <Paragraph>
+          The app allows users to request services for homes, apartments,
+          villas, offices, and vehicles. Users can schedule and manage
+          service requests through the application.
+        </Paragraph>
 
-          <SectionTitle>Why We’re the Best in Dubai</SectionTitle>
+        <Paragraph>
+          ✔ Services are carried out using professional tools and
+          established cleaning and maintenance methods.
+        </Paragraph>
 
-          <Paragraph>
-            ✔ <strong>Premium Quality</strong> — We use professional tools, advanced techniques,
-            and trained experts to ensure outstanding results.
-          </Paragraph>
+        <Paragraph>
+          ✔ Service requests can be scheduled based on user availability.
+        </Paragraph>
 
-          <Paragraph>
-            ✔ <strong>Fast & Reliable</strong> — We value your time and always arrive on schedule.
-          </Paragraph>
+        <Paragraph>
+          ✔ Pricing details are displayed within the app where applicable.
+        </Paragraph>
 
-          <Paragraph>
-            ✔ <strong>Affordable Pricing</strong> — Fair, transparent, and competitive rates for everyone.
-          </Paragraph>
+        <Paragraph>
+          ✔ Service personnel are trained to perform assigned tasks.
+        </Paragraph>
 
-          <Paragraph>
-            ✔ <strong>Trusted Professionals</strong> — Our team is highly trained, responsible, and dedicated.
-          </Paragraph>
+        <Paragraph>
+          ✔ Service completion is based on the selected service request.
+        </Paragraph>
 
-          <Paragraph>
-            ✔ <strong>Your Satisfaction First</strong> — We don’t leave until the job is perfect.
-          </Paragraph>
+        <SectionTitle>Contact Information</SectionTitle>
 
-          <SectionTitle>Our Mission</SectionTitle>
+        <ContactBox>
+          <ContactItem>
+            <strong>Company:</strong> MACO
+          </ContactItem>
+          <ContactItem>
+            <strong>Website:</strong> macoexperts.com
+          </ContactItem>
+          <ContactItem>
+            <strong>Address:</strong> Royal Class Office No. 493, DIP 1, Dubai
+          </ContactItem>
+          <ContactItem>
+            <strong>Email:</strong> matthewcarwashandcleaning20@gmail.com
+          </ContactItem>
+          <ContactItem>
+            <strong>Phone/WhatsApp:</strong> +971 56 830 7510
+          </ContactItem>
+        </ContactBox>
 
-          <Paragraph>
-            Our mission is to provide 
-            <Highlight> reliable, affordable, and high-quality services </Highlight>
-            that improve everyday living. We are here to give you peace of mind and make your environment 
-            cleaner, safer, and more comfortable.
-          </Paragraph>
+      </Container>
+    </IonContent>
+  </IonPage>
+);
 
-          <SectionTitle>Contact Information</SectionTitle>
-
-          <ContactBox>
-            <ContactItem>
-              <strong>Company:</strong> MACO 
-            </ContactItem>
-            <ContactItem>
-              <strong>Website:</strong> macoexperts.com
-            </ContactItem>
-            <ContactItem>
-              <strong>Address:</strong> Royal Class Office No. 493, DIP 1, Dubai
-            </ContactItem>
-            <ContactItem>
-              <strong>Email:</strong> matthewcarwashandcleaning20@gmail.com
-            </ContactItem>
-            <ContactItem>
-              <strong>Phone/WhatsApp:</strong> +971 56 830 7510
-            </ContactItem>
-          </ContactBox>
-
-          <Paragraph style={{ marginTop: 22, textAlign: 'center', fontWeight: 600 }}>
-            Thank you for trusting MACO —  
-            <br/>
-            <Highlight>Your satisfaction is our priority!</Highlight>
-          </Paragraph>
-
-        </Container>
-      </IonContent>
-    </IonPage>
-  );
 };
 
 export default AboutPage;

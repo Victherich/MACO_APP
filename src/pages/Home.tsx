@@ -471,16 +471,18 @@ const PromoText = styled.p`
 
 /* ------------------------- DATA ------------------------- */
 const carouselTexts = [
-  '🛠️ 1. CHOOSE YOUR PACKAGE BELOW',
-  '📞 2. BOOK / CONTACT US',
-  '🧘‍♂️ 3. RELAX AND WATCH US DELIVER 🚘✨',
+  '1. SELECT SERVICE',
+  '2. REQUEST SERVICE',
+  '3. SERVICES ARE SCHEDULED AFTER REQUEST SUBMISSION',
 ];
+
+
 const promos = [
-  '🔥 20% OFF this week only!',
-  '🧽 Book now',
-  '🚘 We come to you',
-  '✨ Shine like new',
+'Request Service',
+'On-Site Service',
 ];
+
+
 
 /* ------------------------- HOME PAGE ------------------------- */
 const Home: React.FC = () => {
@@ -491,6 +493,8 @@ const Home: React.FC = () => {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const promoRef = useRef<HTMLDivElement>(null);
   const [showExitAlert, setShowExitAlert] = useState(false);
+  const [promoIndex, setPromoIndex] = useState(0);
+
 
   /* ------------------------- CAROUSEL ------------------------- */
   useEffect(() => {
@@ -517,37 +521,6 @@ const Home: React.FC = () => {
     fetchServices();
   });
 
-  // /* ------------------------- ANDROID BACK BUTTON EXIT ------------------------- */
-  // useEffect(() => {
-  //   const handler = CapacitorApp.addListener('backButton', (event) => {
-  //     if (window.location.pathname === '/home') {
-  //       event.preventDefault();
-  //       setShowExitAlert(true);
-  //     }
-  //   });
-  //   return () => handler.remove();
-  // }, []);
-
-
-
-// useEffect(() => {
-//   let listener: PluginListenerHandle | undefined;
-
-//   const setupListener = async () => {
-//     listener = await CapacitorApp.addListener('backButton', ({ canGoBack }) => {
-//       // Only exit on specific route
-//       if (window.location.pathname === '/home') {
-//         setShowExitAlert(true);
-//       }
-//     });
-//   };
-
-//   setupListener();
-
-//   return () => {
-//     listener?.remove();
-//   };
-// }, []);
 
 
 useEffect(() => {
@@ -576,6 +549,20 @@ useEffect(() => {
 
 
 
+
+useEffect(() => {
+  if (!promos || promos.length === 0) return;
+
+  const interval = setInterval(() => {
+    setPromoIndex(prev => (prev + 1) % promos.length);
+  }, 2000); // change every 3s
+
+  return () => clearInterval(interval);
+}, [promos]);
+
+
+
+
   /* ------------------------- HANDLE BOOK NOW ------------------------- */
   const handleBookNow = async (service: any) => {
     await Preferences.set({ key: 'selectedService', value: JSON.stringify(service) });
@@ -589,17 +576,13 @@ useEffect(() => {
   return (
     <IonPage>
       <Header title="MACO"/>
-      {/* <IonHeader>
-          <IonToolbar>
-            <IonTitle>MACO</IonTitle>
-          </IonToolbar>
-        </IonHeader> */}
+
       <IonContent fullscreen>
         <Container>
           <LogoWrapper><Logo src={Logo2} /></LogoWrapper>
-          <Heading>Welcome to</Heading>
+          {/* <Heading>Welcome to</Heading> */}
           <Brand>MACO</Brand>
-          <p style={{textAlign:"center"}}>Your Best Carwash, Home Maintenance, Cleaning and Handyman Services Provider</p>
+          <p style={{textAlign:"center"}}>Car Wash, Home Maintenance, Cleaning, and Handyman Services</p>
           <HeroCarousel><HeroText>{carouselTexts[carouselIndex]}</HeroText></HeroCarousel>
           <SectionTitle>Our Packages</SectionTitle>
           <ServicesGrid>
@@ -632,13 +615,26 @@ useEffect(() => {
           </ServicesGrid>
           <SectionTitle>How It Works</SectionTitle>
           <StepsContainer>
-            <Step>1️⃣ Choose your service</Step>
-            <Step>📅 Book / Contact us</Step>
-            <Step>🧽 We clean, you relax!</Step>
+            <Step>SELECT SERVICE</Step>
+            <Step>REQUEST SERVICE</Step>
+            <Step>SERVICES ARE SCHEDULED AFTER REQUEST SUBMISSION</Step>
           </StepsContainer>
-          <PromoCarouselWrapper ref={promoRef}>
+          {/* <PromoCarouselWrapper ref={promoRef}>
             {promos.map((promo, i) => (<PromoText key={i}>{promo}</PromoText>))}
-          </PromoCarouselWrapper>
+          </PromoCarouselWrapper> */}
+
+<PromoCarouselWrapper ref={promoRef}>
+  {promos.length > 0 && 
+  <PromoText
+  key={promoIndex}
+  style={{ transition: 'opacity 0.5s', opacity: 1 }}
+>
+  {promos[promoIndex]}
+</PromoText>
+  }
+</PromoCarouselWrapper>
+
+
         </Container>
 
         {/* Exit Confirmation Alert */}

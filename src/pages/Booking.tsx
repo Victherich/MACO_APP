@@ -483,7 +483,7 @@ useIonViewWillEnter(() => {
         <IonContent fullscreen>
           <div style={{ padding: 20, textAlign: 'center' }}>
             {/* <IonSpinner name="crescent" /> */}
-            <p>Please Select a package from <span style={{
+            <p>Please Select a service from <span style={{
               fontWeight:"bold",
                fontStyle:"italic",
                 color:"blue",
@@ -517,11 +517,11 @@ useIonViewWillEnter(() => {
   return (
     <IonPage>
  
-      <Header title='Select a Package'/>
+      <Header title='Select a Service'/>
 
       <IonContent fullscreen>
         <Container>
-          <Title>Select a Package for {service?.title}</Title>
+          <Title>Select a {service?.title}</Title>
 
           <Image src={service?.imageUrl || service?.image || '/assets/logo.png'} alt="service" />
 
@@ -539,7 +539,7 @@ useIonViewWillEnter(() => {
 
            
               >
-                <IonSelectOption value={null}>-- Select Package --</IonSelectOption>
+                <IonSelectOption value={null}>-- Select --</IonSelectOption>
                 {service?.packages?.map((pkg: any, idx: number) => (
                   <IonSelectOption key={idx} value={pkg}>
                     {pkg.name} - AED {pkg.price}
@@ -551,7 +551,7 @@ useIonViewWillEnter(() => {
 
           {selectedPackage && (
             <>
-              <Label>Selected Package:</Label>
+              <Label>Selected Service:</Label>
               <div style={{ fontSize: 16, color: '#333', marginTop: 6 }}>{selectedPackage.name}</div>
               <div style={{ fontSize: 14, color: '#555', marginTop: 4 }}>Price: AED {selectedPackage.price}</div>
 
@@ -564,7 +564,7 @@ useIonViewWillEnter(() => {
           {/* ---------------- User Info Modal (FULLSCREEN) ---------------- */}
           <IonModal isOpen={showUserModal} className="my-fullscreen-modal">
 
-            <Header title='Enter Your Info'/>
+            <Header title='Enter Details'/>
 
             <IonContent>
               <div style={{ padding: 18 }}>
