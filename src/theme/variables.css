@@ -125,8 +125,9 @@ ion-alert {
 
 
  ion-tab-bar {
-  --background: #d0e7ff; /* blue */
-  --color: #222;       
+  /* --background: #d0e7ff; blue */
+  --background: linear-gradient(180deg, #00c8ff 0%, #0073ff 100%);
+  --color: white;       
   /* --color-selected: #ffffff; */
 } 
 
