@@ -7,6 +7,9 @@ interface AppContextType {
   isTrackingOpen: boolean;
   setTrackingOpen: (open: boolean) => void;
 
+  openSearchingModal: boolean;
+  setOpenSearchingModal: (open: boolean) => void;
+
   // 🔮 future global state goes here
   // userLocation?: ...
   // activeModal?: ...
@@ -27,13 +30,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     else localStorage.removeItem("activeOrderId");
   };
 
+
+
+ const [openSearchingModal, setOpenSearchingModal] = useState(false)
+
+
+
   return (
     <AppContext.Provider
       value={{
         activeOrderId,
         setActiveOrderId,
         isTrackingOpen,
-        setTrackingOpen
+        setTrackingOpen,
+        openSearchingModal,
+        setOpenSearchingModal
       }}
     >
       {children}

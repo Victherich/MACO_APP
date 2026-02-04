@@ -7,7 +7,7 @@ import {
   IonCol,
   useIonViewWillEnter,
   IonModal,
-  IonButton
+  IonButton,IonAlert
 } from "@ionic/react";
 import styled from "styled-components";
 import Header from "../components/Header";
@@ -17,6 +17,9 @@ import ServiceDetailsModal from "../components/ServiceDetailsModal";
 import { useApp } from "../context/AppContext";
 import TrackingModal from "../components/TrackingModal";
 import UserInfo from "../components/UserInfo";
+import { ref, onValue, off } from "firebase/database";
+import { rtdb, auth } from "../firebaseConfig";
+import SearchingModal from "../components/SearchingModal";
 
 
 
@@ -107,41 +110,23 @@ const services = [
  
       {
         icon: "🚘",
+        title: "4x / month",
+        desc: "Premium monthly plan with deeper cleaning (4 visits per month)",
+        price: "AED 50",
+      },
+      {
+        icon: "🚘",
         title: "8x / month",
         desc: "Premium monthly plan with deeper cleaning (8 visits per month)",
         price: "AED 80",
       },
       {
-        icon: "🚙",
+        icon: "🚘",
         title: "12x / month",
         desc: "Ultimate monthly plan for daily use cars (12 visits per month)",
         price: "AED 100",
       },
-      {
-        icon: "🧼",
-        title: "Interior Clean",
-        desc: "Full interior vacuum + wipe-down + dashboard cleaning",
-        price: "AED 25",
-      },
     
-      {
-        icon: "🧽",
-        title: "Tyre + Wash",
-        desc: "One-time tyre service plus full exterior wash bundle",
-        price: "AED 120",
-      },
-      {
-        icon: "🚿",
-        title: "1x Wash",
-        desc: "Standard exterior wash with quick drying finish",
-        price: "AED 25",
-      },
-      {
-        icon: "🚿",
-        title: "Inside + Outside",
-        desc: "Complete inside and outside cleaning in a single visit",
-        price: "AED 40",
-      },
     ],
   },
   {
@@ -165,18 +150,7 @@ const services = [
         desc: "Daily garden maintenance for small gardens (size-based pricing)",
         price: "AED 200",
       },
-      {
-        icon: "🌳",
-        title: "Daily (medium)",
-        desc: "Daily garden maintenance for medium gardens (size-based pricing)",
-        price: "AED 250",
-      },
-      {
-        icon: "🌳",
-        title: "Daily (large)",
-        desc: "Daily garden maintenance for large gardens (size-based pricing)",
-        price: "AED 300",
-      },
+     
     ],
   },
   {
@@ -196,17 +170,7 @@ const services = [
       },
     ],
   },
-  {
-    category: "Maintenance",
-    items: [
-      {
-        icon: "🛠️",
-        title: "Routine",
-        desc: "Routine inspection & maintenance service (price based on scope)",
-        price: "AED - ",
-      },
-    ],
-  },
+ 
   {
     category: "Handyman Services",
     items: [
@@ -216,12 +180,7 @@ const services = [
         desc: "Subscription package for regular handyman work (monthly plan)",
         price: "AED 420",
       },
-      {
-        icon: "🔌",
-        title: "Non-subscriber",
-        desc: "One-time handyman services based on required tasks and scope",
-        price: "AED - ",
-      },
+
     ],
   },
 ];
@@ -231,7 +190,12 @@ const DashboardHome: React.FC = () => {
   const history= useHistory();
 const [isOpen, setIsOpen] = useState(false);
 const [selectedService, setSelectedService] = useState<any>(null);
-const { activeOrderId, isTrackingOpen, setTrackingOpen } = useApp();
+const { activeOrderId, isTrackingOpen, setTrackingOpen , setActiveOrderId, openSearchingModal, setOpenSearchingModal} = useApp();
+const [showNoBookingAlert, setShowNoBookingAlert] = useState(false);
+const [hasActiveBooking, setHasActiveBooking] = useState(false);
+
+
+
 
   
 
@@ -249,6 +213,93 @@ useEffect(() => {
   //     history.push("/login");
   //   }
   // });
+
+
+
+
+
+useEffect(() => {
+  if (!user) return;
+
+  const ordersRef = ref(rtdb, "orders");
+
+  const unsubscribe = onValue(ordersRef, (snapshot) => {
+    const orders = snapshot.val();
+    if (!orders) {
+      setHasActiveBooking(false);
+      return;
+    }
+
+    // ✅ 👇 THIS CODE GOES RIGHT HERE
+    const active = Object.entries(orders).find(
+      ([_, order]: any) =>
+        order.userId === user.uid &&
+        (order.status === "ACCEPTED" ||
+          order.status === "IN_PROGRESS" ||
+          order.status === "COMPLETED")
+    );
+
+    if (!active) {
+      setHasActiveBooking(false);
+      return;
+    }
+
+    setHasActiveBooking(true);
+
+    const [orderId, data]: any = active;
+
+    // setActiveOrder(data);
+    // setStatus(data.status);
+    // setActiveOrderId(orderId);
+
+    // map + markers logic continues here...
+  });
+
+  return () => off(ordersRef);
+}, [user]);
+
+
+
+
+
+
+useEffect(() => {
+  if (!user) return;
+
+  const ordersRef = ref(rtdb, "orders");
+
+  const unsubscribe = onValue(ordersRef, (snapshot) => {
+    const orders = snapshot.val();
+
+    if (!orders) {
+      setOpenSearchingModal(false);
+      return;
+    }
+
+    const searchingOrder = Object.values<any>(orders).find(
+      (order) =>
+        order.userId === user.uid &&
+        order.status === "SEARCHING"
+    );
+
+    setOpenSearchingModal(!!searchingOrder);
+  });
+
+  return () => off(ordersRef);
+}, [user]);
+
+
+
+// 🔹 AUTO-OPEN TRACKING MODAL WHEN THERE IS AN ACTIVE BOOKING
+useEffect(() => {
+  if (hasActiveBooking && !isTrackingOpen) {
+    setTrackingOpen(true);
+  }
+}, [hasActiveBooking]);
+
+
+
+
 
   return (
     <IonPage>
@@ -268,11 +319,21 @@ useEffect(() => {
 
 <UserInfo/>
 
-                   {activeOrderId && (
-  <IonButton expand="block" onClick={() => setTrackingOpen(true)}>
+                   
+ <IonButton
+  expand="block"
+  onClick={() => {
+    if (hasActiveBooking) {
+      setTrackingOpen(true);
+    } else {
+      setShowNoBookingAlert(true);
+    }
+  }}
+>
   Ongoing Booking
-  </IonButton>
-)}
+</IonButton>
+
+
 
 
           <Title>Service Dashboard</Title>
@@ -307,24 +368,36 @@ useEffect(() => {
             </div>
           ))}
 
-          {activeOrderId && (
-  <IonButton expand="block" onClick={() => setTrackingOpen(true)}>
-    Ongoing Booking
-  </IonButton>
-)}
+
+
 
 
           <IonModal
-  isOpen={isTrackingOpen && !!activeOrderId}
+  isOpen={isTrackingOpen}
   canDismiss={false}
 >
-  {activeOrderId && (
     <TrackingModal
-      orderId={activeOrderId}
       onClose={() => setTrackingOpen(false)}
     />
-  )}
 </IonModal>
+
+
+<IonModal isOpen={openSearchingModal}>
+  <SearchingModal onClose={() => setOpenSearchingModal(false)} />
+</IonModal>
+
+
+
+
+
+<IonAlert
+  isOpen={showNoBookingAlert}
+  onDidDismiss={() => setShowNoBookingAlert(false)}
+  header="No Active Booking"
+  message="You have no ongoing booking at the moment."
+  buttons={["OK"]}
+/>
+
 
         </Container>
       </IonContent>
