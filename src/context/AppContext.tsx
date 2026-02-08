@@ -10,6 +10,9 @@ interface AppContextType {
   openSearchingModal: boolean;
   setOpenSearchingModal: (open: boolean) => void;
 
+   showAlert: boolean;
+  setShowAlert: (open: boolean) => void;
+
   // 🔮 future global state goes here
   // userLocation?: ...
   // activeModal?: ...
@@ -33,7 +36,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
 
  const [openSearchingModal, setOpenSearchingModal] = useState(false)
-
+  const [showAlert, setShowAlert] = useState(false);
 
 
   return (
@@ -44,7 +47,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         isTrackingOpen,
         setTrackingOpen,
         openSearchingModal,
-        setOpenSearchingModal
+        setOpenSearchingModal,
+        showAlert, setShowAlert
       }}
     >
       {children}

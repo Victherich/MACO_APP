@@ -61,7 +61,7 @@ const BookingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
    <IonModal isOpen={isOpen} onDidDismiss={onClose}>
   <IonHeader>
     <IonToolbar>
-      <IonTitle>My Bookings</IonTitle>
+      <IonTitle>My Bookings </IonTitle>
 
       <IonButton
         slot="end"

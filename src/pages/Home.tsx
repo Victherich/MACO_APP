@@ -190,7 +190,14 @@ const DashboardHome: React.FC = () => {
   const history= useHistory();
 const [isOpen, setIsOpen] = useState(false);
 const [selectedService, setSelectedService] = useState<any>(null);
-const { activeOrderId, isTrackingOpen, setTrackingOpen , setActiveOrderId, openSearchingModal, setOpenSearchingModal} = useApp();
+const { activeOrderId, 
+  isTrackingOpen, 
+  setTrackingOpen , 
+  setActiveOrderId, 
+  openSearchingModal, 
+  setOpenSearchingModal,
+showAlert, setShowAlert
+} = useApp();
 const [showNoBookingAlert, setShowNoBookingAlert] = useState(false);
 const [hasActiveBooking, setHasActiveBooking] = useState(false);
 
@@ -218,7 +225,7 @@ useEffect(() => {
 
 
 
-useEffect(() => {
+const handleActiveBooking = ()=>{
   if (!user) return;
 
   const ordersRef = ref(rtdb, "orders");
@@ -227,6 +234,7 @@ useEffect(() => {
     const orders = snapshot.val();
     if (!orders) {
       setHasActiveBooking(false);
+      setTrackingOpen(false);
       return;
     }
 
@@ -236,15 +244,17 @@ useEffect(() => {
         order.userId === user.uid &&
         (order.status === "ACCEPTED" ||
           order.status === "IN_PROGRESS" ||
-          order.status === "COMPLETED")
+          order.status === "COMPLETED")&&order.payment_status === "NOT_PAID"
     );
 
     if (!active) {
       setHasActiveBooking(false);
+      setTrackingOpen(false)
       return;
     }
 
     setHasActiveBooking(true);
+    setTrackingOpen(true);
 
     const [orderId, data]: any = active;
 
@@ -256,6 +266,11 @@ useEffect(() => {
   });
 
   return () => off(ordersRef);
+
+}
+
+useEffect(() => {
+handleActiveBooking();
 }, [user]);
 
 
@@ -301,6 +316,20 @@ useEffect(() => {
 
 
 
+
+
+const handleAlertOk = () => {
+  setShowAlert(false);       // hide the success alert
+  setTrackingOpen(false);    // close tracking modal if open
+  setIsOpen(false);          // close service modal if open
+  setOpenSearchingModal(false); // close searching modal if open
+  // do NOT call history.replace("/tabs/home") if already on home
+};
+
+
+
+
+
   return (
     <IonPage>
       <Header title="MACO" />
@@ -323,6 +352,7 @@ useEffect(() => {
  <IonButton
   expand="block"
   onClick={() => {
+    handleActiveBooking();
     if (hasActiveBooking) {
       setTrackingOpen(true);
     } else {
@@ -374,7 +404,7 @@ useEffect(() => {
 
           <IonModal
   isOpen={isTrackingOpen}
-  canDismiss={false}
+  // canDismiss={false}
 >
     <TrackingModal
       onClose={() => setTrackingOpen(false)}
@@ -398,7 +428,13 @@ useEffect(() => {
   buttons={["OK"]}
 />
 
-
+ {/* ✅payment Success Alert */}
+      <IonAlert
+        isOpen={showAlert}
+        header="Payment Success"
+        message="Order marked as PAID successfully!"
+        buttons={[{ text: "OK", handler: handleAlertOk }]}
+      />
         </Container>
       </IonContent>
     </IonPage>
