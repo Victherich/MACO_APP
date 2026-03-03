@@ -260,7 +260,7 @@ const ConfirmLocationModal: React.FC<Props> = ({ service, onClose }) => {
         <IonToolbar>
           <IonTitle>Confirm Location</IonTitle>
           <IonButton slot="end" fill="clear" onClick={onClose}>
-            Close
+            Back
           </IonButton>
         </IonToolbar>
       </IonHeader>

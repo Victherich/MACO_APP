@@ -1,9 +1,13 @@
 
+
 // // firebaseConfig.ts
 // import { initializeApp } from "firebase/app";
 // import { getAuth } from "firebase/auth";
 // import { getFirestore } from "firebase/firestore";
 // import { getAnalytics } from "firebase/analytics";
+// import { getDatabase } from "firebase/database";
+// import { getMessaging } from "firebase/messaging";
+
 
 // /* ✅ Your Firebase configuration */
 // const firebaseConfig = {
@@ -13,11 +17,17 @@
 //   storageBucket: "matthew-car-wash-and-cleaning.appspot.com",
 //   messagingSenderId: "1042442426170",
 //   appId: "1:1042442426170:web:47c60feae9144aaeb7a203",
-//   measurementId: "G-SXEFTW2NWR"
+//   measurementId: "G-SXEFTW2NWR",
+
+//   // ✅ ADD THIS
+//   databaseURL: "https://matthew-car-wash-and-cleaning-default-rtdb.firebaseio.com"
 // };
 
 // /* Initialize Firebase */
 // const app = initializeApp(firebaseConfig);
+
+// export const messaging = getMessaging(app);
+
 
 // /* Optional: Analytics (works in browser or HTTPS) */
 // let analytics;
@@ -28,9 +38,12 @@
 // /* Export services for use in your app */
 // export const auth = getAuth(app);
 // export const db = getFirestore(app);
+
+// // ✅ Export Realtime Database
+// export const rtdb = getDatabase(app);
+
 // export { analytics };
 // export default app;
-
 
 
 
@@ -40,6 +53,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase } from "firebase/database";
+import { getMessaging } from "firebase/messaging";   // ✅ ADD THIS
 
 /* ✅ Your Firebase configuration */
 const firebaseConfig = {
@@ -50,8 +64,6 @@ const firebaseConfig = {
   messagingSenderId: "1042442426170",
   appId: "1:1042442426170:web:47c60feae9144aaeb7a203",
   measurementId: "G-SXEFTW2NWR",
-
-  // ✅ ADD THIS
   databaseURL: "https://matthew-car-wash-and-cleaning-default-rtdb.firebaseio.com"
 };
 
@@ -67,9 +79,10 @@ if (typeof window !== "undefined") {
 /* Export services for use in your app */
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-
-// ✅ Export Realtime Database
 export const rtdb = getDatabase(app);
+
+// ✅ VERY IMPORTANT FOR NOTIFICATIONS
+export const messaging = getMessaging(app);
 
 export { analytics };
 export default app;

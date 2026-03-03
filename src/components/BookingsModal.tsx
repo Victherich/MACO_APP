@@ -68,7 +68,7 @@ const BookingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
         fill="clear"
         onClick={onClose}
       >
-        Close
+        Back
       </IonButton>
     </IonToolbar>
   </IonHeader>

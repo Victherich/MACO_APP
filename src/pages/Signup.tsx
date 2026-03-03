@@ -92,7 +92,7 @@ if (password !== confirmPassword) {
         name,
         phone,
         email,
-        role: "CUSTOMER",
+        role: "customer",
         createdAt: serverTimestamp(),
       });
 
@@ -116,7 +116,7 @@ useEffect(() => {
       history.replace("/home");
     }
   });
-
+ 
   return () => unsubscribe();
 }, [history]);
 

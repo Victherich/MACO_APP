@@ -51,7 +51,7 @@ const ServiceDetailsModal: React.FC<Props> = ({ service, onClose }) => {
         <IonToolbar>
           <IonTitle>Service Details</IonTitle>
           <IonButton slot="end" fill="clear" onClick={onClose}>
-            Close
+            Back
           </IonButton>
         </IonToolbar>
       </IonHeader>

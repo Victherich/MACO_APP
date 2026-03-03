@@ -231,7 +231,8 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonButton
+  IonButton,
+  IonModal,IonAlert
 } from "@ionic/react";
 import styled from "styled-components";
 import { ref, onValue, off } from "firebase/database";
@@ -242,6 +243,7 @@ import CustomerTrackingMap from "./CustomerTrackingMap";
 import ProviderDetailsModal from "./ProviderDetailsModal";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import CancelOrderModal from "./CancelOrderModal";
 
 
 
@@ -307,6 +309,11 @@ const TrackingModal: React.FC<Props> = ({ onClose }) => {
   const [activeOrder, setActiveOrder] = useState<any | null>(null);
   const [showProviderModal, setShowProviderModal] = useState(false);
   const [distance, setDistance] = useState<string>(""); 
+
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+const [showCancelInfoModal, setShowCancelInfoModal] = useState(false);
+
+
 
    // ✅ REAL provider location (from Firestore)
   const [providerLocation, setProviderLocation] = useState<{
@@ -427,7 +434,7 @@ useEffect(() => {
         <IonToolbar>
           <IonTitle>Tracking</IonTitle>
               <IonButton slot="end" fill="clear" onClick={onClose}>
-                    Close
+                    Back
                   </IonButton>
         </IonToolbar> 
       </IonHeader>
@@ -461,13 +468,28 @@ useEffect(() => {
               {activeOrder.service.title} • {activeOrder.service.price}
             </StatusText>
           )} 
-          <StatusText>
+          <StatusText >
             {status === "ACCEPTED" && "Provider is on the way 🚗"}
+
             {status === "IN_PROGRESS" && "Service in progress 🧼"}
             {status === "COMPLETED" && "Service Completed ✅"}
             {paymentStatus === "PAID" && "Payment received 🎉"}
             {!status && "Waiting for update..."}
             <br/>{distance && <>{distance} km away</>}
+
+            {status==="ACCEPTED" && <p
+  style={{
+    textAlign: "center",
+    color: "red",
+    marginTop: 2,
+    textDecoration: "underline",
+    cursor: "pointer"
+  }}
+  onClick={() => setShowCancelConfirm(true)}
+>
+  Cancel order
+</p>}
+
           </StatusText>
 
        
@@ -539,6 +561,36 @@ useEffect(() => {
   onClose={() => setShowProviderModal(false)}
   providerId={activeOrder?.providerId}
 />
+
+<IonAlert
+  isOpen={showCancelConfirm}
+  onDidDismiss={() => setShowCancelConfirm(false)}
+  header="Cancel Order"
+  message="Are you sure you want to cancel this order?"
+  buttons={[
+    {
+      text: "No",
+      role: "cancel",
+      handler: () => setShowCancelConfirm(false)
+    },
+    {
+      text: "Yes",
+      handler: () => {
+        setShowCancelConfirm(false);
+        setShowCancelInfoModal(true);
+      }
+    }
+  ]}
+/>
+
+
+
+<CancelOrderModal
+  isOpen={showCancelInfoModal}
+  onClose={() => setShowCancelInfoModal(false)}
+  providerId={activeOrder?.providerId}
+/>
+
 
       </IonContent>
     </>
