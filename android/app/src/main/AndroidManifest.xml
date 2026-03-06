@@ -16,6 +16,16 @@
         android:theme="@style/AppTheme">
 
         <meta-data
+  android:name="onesignal_app_id"
+  android:value="2453990e-29a7-4be4-b01e-0ea150654842" />
+
+<meta-data
+  android:name="onesignal_google_project_number"
+  android:value="REMOTE" />
+
+        
+
+        <meta-data
   android:name="com.google.android.geo.API_KEY"
   android:value="AIzaSyDEIb1z89h0MEOuGfTBRLCbyuvxPpTQn_s" />
 

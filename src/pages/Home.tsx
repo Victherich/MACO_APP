@@ -20,6 +20,9 @@ import UserInfo from "../components/UserInfo";
 import { ref, onValue, off } from "firebase/database";
 import { rtdb, auth } from "../firebaseConfig";
 import SearchingModal from "../components/SearchingModal";
+import OneSignal from 'onesignal-cordova-plugin';
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig"; // make sure this exists
 
 
 
@@ -187,6 +190,7 @@ const services = [
 
 
 const DashboardHome: React.FC = () => {
+  const [oneSignalInitialized, setOneSignalInitialized] = useState(false);
   const history= useHistory();
 const [isOpen, setIsOpen] = useState(false);
 const [selectedService, setSelectedService] = useState<any>(null);
@@ -214,6 +218,22 @@ useEffect(() => {
     history.replace("/login");
   }
 }, [user, loading]);
+// useEffect(() => {
+//   if (!loading && !user) {
+//     history.replace("/login");
+//   }
+
+//   if (!loading && user && !oneSignalInitialized) {
+//     setupOneSignal(user);
+//     setOneSignalInitialized(true);
+//   }
+// }, [user, loading]);
+
+
+
+
+
+
 
   // useIonViewWillEnter(() => {
   //   if (!loading && !user) {
@@ -325,6 +345,33 @@ const handleAlertOk = () => {
   setOpenSearchingModal(false); // close searching modal if open
   // do NOT call history.replace("/tabs/home") if already on home
 };
+
+
+
+// const setupOneSignal = async (user) => {
+//   try {
+//     const userRef = doc(db, "users", user.uid);
+//     const userSnap = await getDoc(userRef);
+
+//     if (!userSnap.exists()) return;
+
+//     const userData = userSnap.data();
+//     const role = userData.role;
+
+//     document.addEventListener("deviceready", () => {
+//       OneSignal.setExternalUserId(user.uid);
+
+//       OneSignal.sendTags({
+//         role: role
+//       });
+
+//       console.log("✅ OneSignal initialized:", user.uid, role);
+//     });
+
+//   } catch (error) {
+//     console.error("❌ OneSignal setup error:", error);
+//   }
+// };
 
 
 

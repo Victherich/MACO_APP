@@ -12,6 +12,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@awesome-cordova-plugins/onesignal": "^8.1.0",
     "@capacitor/android": "7.4.4",
     "@capacitor/app": "7.1.0",
     "@capacitor/browser": "^7.0.2",
@@ -33,6 +34,7 @@
     "@types/styled-components": "^5.1.35",
     "firebase": "^12.6.0",
     "ionicons": "^7.4.0",
+    "onesignal-cordova-plugin": "^5.3.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-router": "^5.3.4",

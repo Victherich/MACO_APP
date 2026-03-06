@@ -64,6 +64,18 @@ import { onMessage } from "firebase/messaging";
 import { messaging } from "./firebaseConfig";
 import { App as CapApp } from "@capacitor/app";
 import { useIonAlert } from "@ionic/react";
+import OneSignal from 'onesignal-cordova-plugin';
+
+// document.addEventListener('deviceready', function () {
+
+//   OneSignal.setAppId("2453990e-29a7-4be4-b01e-0ea150654842");
+
+//   OneSignal.setNotificationOpenedHandler(function(jsonData) {
+//     console.log("Notification opened:", jsonData);
+//   });
+
+// });
+
 
 
 setupIonicReact();
@@ -147,6 +159,55 @@ useEffect(() => {
   };
 }, [presentAlert]);
 
+
+
+//  useEffect(() => {
+//     document.addEventListener("deviceready", () => {
+
+//       OneSignal.setAppId("2453990e-29a7-4be4-b01e-0ea150654842");
+
+//       OneSignal.setNotificationOpenedHandler((data: any) => {
+//         console.log("Notification opened:", data);
+//       });
+
+//     });
+//   }, []);
+
+
+//  useEffect(() => {
+
+//     document.addEventListener("deviceready", function () {
+
+//       console.log("Device ready fired");
+
+//       OneSignal.setLogLevel(6, 0); // DEBUG
+
+//       OneSignal.setAppId("2453990e-29a7-4be4-b01e-0ea150654842");
+
+//       OneSignal.promptForPushNotificationsWithUserResponse(function(accepted) {
+//         console.log("User accepted notifications:", accepted);
+//       });
+
+//       OneSignal.setNotificationOpenedHandler(function(data) {
+//         console.log("Notification opened:", data);
+//       });
+
+//     }, false);
+
+//   }, []);
+
+
+
+
+    // // Enable verbose logging for debugging (remove in production)
+    //   OneSignal.Debug.setLogLevel(6);
+    //   // Initialize with your OneSignal App ID
+    //   OneSignal.initialize("2453990e-29a7-4be4-b01e-0ea150654842");
+    //   // Use this method to prompt for push notifications.
+    //   // We recommend removing this method after testing and instead use In-App Messages to prompt for notification permission.
+    //   OneSignal.Notifications.requestPermission(false).then((accepted: boolean) => {
+    //     console.log("User accepted notifications: " + accepted);
+    //   });
 
 
   return (
