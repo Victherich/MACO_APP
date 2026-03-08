@@ -59,12 +59,13 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import UserAccount from "./pages/UserAccount";
 import { AppProvider } from "./context/AppContext";
-import { saveFcmToken } from "./pushNotifications";
-import { onMessage } from "firebase/messaging";
-import { messaging } from "./firebaseConfig";
+// import { saveFcmToken } from "./pushNotifications";
+// import { onMessage } from "firebase/messaging";
+// import { messaging } from "./firebaseConfig";
 import { App as CapApp } from "@capacitor/app";
 import { useIonAlert } from "@ionic/react";
-import OneSignal from 'onesignal-cordova-plugin';
+// import OneSignal from 'onesignal-cordova-plugin';
+// import { PushNotifications } from "@capacitor/push-notifications";
 
 // document.addEventListener('deviceready', function () {
 
@@ -104,17 +105,17 @@ const App: React.FC = () => {
   }, []);
 
 
-useEffect(() => {
-  saveFcmToken();
-}, []);
+// useEffect(() => {
+//   saveFcmToken();
+// }, []);
 
 
 
-useEffect(() => {
-  onMessage(messaging, (payload) => {
-    console.log("Foreground notification:", payload);
-  });
-}, []);
+// useEffect(() => {
+//   onMessage(messaging, (payload) => {
+//     console.log("Foreground notification:", payload);
+//   });
+// }, []);
 
 
 
@@ -161,53 +162,83 @@ useEffect(() => {
 
 
 
-//  useEffect(() => {
-//     document.addEventListener("deviceready", () => {
+// //  useEffect(() => {
+// //     document.addEventListener("deviceready", () => {
 
-//       OneSignal.setAppId("2453990e-29a7-4be4-b01e-0ea150654842");
+// //       OneSignal.setAppId("2453990e-29a7-4be4-b01e-0ea150654842");
 
-//       OneSignal.setNotificationOpenedHandler((data: any) => {
-//         console.log("Notification opened:", data);
-//       });
+// //       OneSignal.setNotificationOpenedHandler((data: any) => {
+// //         console.log("Notification opened:", data);
+// //       });
 
+// //     });
+// //   }, []);
+
+
+// //  useEffect(() => {
+
+// //     document.addEventListener("deviceready", function () {
+
+// //       console.log("Device ready fired");
+
+// //       OneSignal.setLogLevel(6, 0); // DEBUG
+
+// //       OneSignal.setAppId("2453990e-29a7-4be4-b01e-0ea150654842");
+
+// //       OneSignal.promptForPushNotificationsWithUserResponse(function(accepted) {
+// //         console.log("User accepted notifications:", accepted);
+// //       });
+
+// //       OneSignal.setNotificationOpenedHandler(function(data) {
+// //         console.log("Notification opened:", data);
+// //       });
+
+// //     }, false);
+
+// //   }, []);
+
+
+
+
+//     // // Enable verbose logging for debugging (remove in production)
+//     //   OneSignal.Debug.setLogLevel(6);
+//     //   // Initialize with your OneSignal App ID
+//     //   OneSignal.initialize("2453990e-29a7-4be4-b01e-0ea150654842");
+//     //   // Use this method to prompt for push notifications.
+//     //   // We recommend removing this method after testing and instead use In-App Messages to prompt for notification permission.
+//     //   OneSignal.Notifications.requestPermission(false).then((accepted: boolean) => {
+//     //     console.log("User accepted notifications: " + accepted);
+//     //   });
+
+
+
+
+//   useEffect(() => {
+//     setupNotificationChannels();
+//   }, []);
+
+//   const setupNotificationChannels = async () => {
+
+//     await PushNotifications.createChannel({
+//       id: "orders",
+//       name: "New Orders",
+//       importance: 5
 //     });
-//   }, []);
 
+//     await PushNotifications.createChannel({
+//       id: "order_updates",
+//       name: "Order Updates",
+//       importance: 4
+//     });
 
-//  useEffect(() => {
+//     await PushNotifications.createChannel({
+//       id: "payments",
+//       name: "Payments",
+//       importance: 4
+//     });
 
-//     document.addEventListener("deviceready", function () {
+//   };
 
-//       console.log("Device ready fired");
-
-//       OneSignal.setLogLevel(6, 0); // DEBUG
-
-//       OneSignal.setAppId("2453990e-29a7-4be4-b01e-0ea150654842");
-
-//       OneSignal.promptForPushNotificationsWithUserResponse(function(accepted) {
-//         console.log("User accepted notifications:", accepted);
-//       });
-
-//       OneSignal.setNotificationOpenedHandler(function(data) {
-//         console.log("Notification opened:", data);
-//       });
-
-//     }, false);
-
-//   }, []);
-
-
-
-
-    // // Enable verbose logging for debugging (remove in production)
-    //   OneSignal.Debug.setLogLevel(6);
-    //   // Initialize with your OneSignal App ID
-    //   OneSignal.initialize("2453990e-29a7-4be4-b01e-0ea150654842");
-    //   // Use this method to prompt for push notifications.
-    //   // We recommend removing this method after testing and instead use In-App Messages to prompt for notification permission.
-    //   OneSignal.Notifications.requestPermission(false).then((accepted: boolean) => {
-    //     console.log("User accepted notifications: " + accepted);
-    //   });
 
 
   return (

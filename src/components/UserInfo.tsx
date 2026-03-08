@@ -8,6 +8,7 @@ import { db } from "../firebaseConfig";
 import ProfileModal from "./ProfileModal";
 import { useCallback } from "react";
 import BookingsModal from "./BookingsModal";
+import { registerPush } from "../pushNotifications";
 
 
 
@@ -116,6 +117,13 @@ const loadProfile = useCallback(async () => {
 React.useEffect(() => {
   loadProfile();
 }, [loadProfile]);
+
+
+React.useEffect(() => {
+  if(user){
+    registerPush(user.uid);
+  }
+}, [user]);
 
 
   return (

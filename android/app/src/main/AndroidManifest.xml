@@ -3,7 +3,7 @@
 
 
 
-    <!-- ✅ THESE GO HERE — OUTSIDE <application> -->
+    <!-- ? THESE GO HERE � OUTSIDE <application> -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
@@ -15,14 +15,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data
+        <!-- <meta-data
   android:name="onesignal_app_id"
   android:value="2453990e-29a7-4be4-b01e-0ea150654842" />
 
 <meta-data
   android:name="onesignal_google_project_number"
-  android:value="REMOTE" />
+  android:value="REMOTE" /> -->
+    <meta-data
+android:name="com.google.firebase.messaging.default_notification_icon"
+android:resource="@mipmap/ic_stat_notification" />
 
+<meta-data
+android:name="com.google.firebase.messaging.default_notification_channel_id"
+android:value="orders_channel"/>
         
 
         <meta-data

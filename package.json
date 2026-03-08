@@ -13,14 +13,16 @@
   },
   "dependencies": {
     "@awesome-cordova-plugins/onesignal": "^8.1.0",
-    "@capacitor/android": "7.4.4",
+    "@capacitor/android": "^8.2.0",
     "@capacitor/app": "7.1.0",
     "@capacitor/browser": "^7.0.2",
-    "@capacitor/core": "7.4.4",
+    "@capacitor/core": "^8.2.0",
     "@capacitor/geolocation": "^7.1.7",
     "@capacitor/haptics": "7.0.2",
-    "@capacitor/keyboard": "7.0.3",
+    "@capacitor/ios": "^8.2.0",
+    "@capacitor/keyboard": "^8.0.1",
     "@capacitor/preferences": "^7.0.2",
+    "@capacitor/push-notifications": "^8.0.2",
     "@capacitor/status-bar": "7.0.3",
     "@capawesome/capacitor-app-update": "^7.2.0",
     "@ionic/react": "^8.5.0",
@@ -43,7 +45,7 @@
     "use-places-autocomplete": "^4.0.1"
   },
   "devDependencies": {
-    "@capacitor/cli": "7.4.4",
+    "@capacitor/cli": "^8.2.0",
     "@testing-library/dom": ">=7.21.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^16.2.0",
