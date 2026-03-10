@@ -27,6 +27,7 @@
     "@capawesome/capacitor-app-update": "^7.2.0",
     "@ionic/react": "^8.5.0",
     "@ionic/react-router": "^8.5.0",
+    "@paypal/react-paypal-js": "^9.0.1",
     "@react-google-maps/api": "^2.20.8",
     "@stripe/react-stripe-js": "^5.5.0",
     "@stripe/stripe-js": "^8.6.4",

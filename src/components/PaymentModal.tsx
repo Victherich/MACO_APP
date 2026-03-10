@@ -139,6 +139,8 @@ import { ref, update } from "firebase/database";
 import { rtdb } from "../firebaseConfig"; // your RTDB instance
 import { useHistory } from "react-router-dom"; // or your router hook
 import { useApp } from "../context/AppContext";
+import { useState } from "react";
+import PayPalPaymentModal from "./PayPalPaymentModal";
 
 interface Props {
   isOpen: boolean;
@@ -155,19 +157,46 @@ const PaymentModal: React.FC<Props> = ({ isOpen, onClose, orderId, order, amount
 
   const history = useHistory();
 
-  const markAsPaid = async () => {
-    if (!orderId) return;
+  const [showPaypal, setShowPaypal] = useState(false);
 
-    try {
-      const orderRef = ref(rtdb, `orders/${orderId}`);
-      await update(orderRef, { payment_status: "PAID" });
-      setShowAlert(true);
-    } catch (err) {
-      console.error("Error marking order as PAID:", err);
-    }
-  };
 
- 
+
+
+
+
+  // const markAsPaid = async () => {
+  //   if (!orderId) return;
+
+  //   try {
+  //     const orderRef = ref(rtdb, `orders/${orderId}`);
+  //     await update(orderRef, { payment_status: "PAID" });
+  //     setShowAlert(true);
+  //   } catch (err) {
+  //     console.error("Error marking order as PAID:", err);
+  //   }
+  // };
+
+ const markAsPaid = async () => {
+  if (!orderId) return;
+
+  try {
+
+    const orderRef = ref(rtdb, `orders/${orderId}`);
+
+    await update(orderRef, {
+      payment_status: "PAID",
+      paidAt: Date.now()
+    });
+
+    setShowAlert(true);
+
+  } catch (err) {
+    console.error("Error marking order as PAID:", err);
+  }
+};
+
+
+
 
   if (!orderId) return null;
 
@@ -243,18 +272,31 @@ const PaymentModal: React.FC<Props> = ({ isOpen, onClose, orderId, order, amount
           </IonItem>
 
           {/* 🔹 Mark as Paid Button */}
-          <IonButton
+          {/* <IonButton
             expand="block"
             color="success"
             style={{ marginTop: 16 }}
             onClick={markAsPaid}
           >
             PAY NOW
-          </IonButton>
+          </IonButton> */}
+          <IonButton
+  expand="block"
+  color="success"
+  style={{ marginTop: 16 }}
+  onClick={() => setShowPaypal(true)}
+>
+  PAY NOW
+</IonButton>
         </IonContent>
       </IonModal>
 
-     
+     <PayPalPaymentModal
+  isOpen={showPaypal}
+  onClose={() => setShowPaypal(false)}
+  amount={amount}
+  onSuccess={markAsPaid}
+/>
     </>
   );
 };

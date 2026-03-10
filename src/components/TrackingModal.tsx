@@ -544,7 +544,7 @@ useEffect(() => {
           )}
         </StatusBar>
 
-        {paymentOpen && activeOrderId && activeOrder && (
+        {/* {paymentOpen && activeOrderId && activeOrder && (
           <PaymentModal
             isOpen={paymentOpen}
             order={activeOrder}
@@ -554,7 +554,20 @@ useEffect(() => {
             )}
             onClose={() => setPaymentOpen(false)}
           />
-        )}
+        )} */}
+
+
+        {paymentOpen && activeOrderId && activeOrder && (
+  <PaymentModal
+    isOpen={paymentOpen}
+    order={activeOrder}
+    orderId={activeOrderId}
+    amount={(
+      Number(activeOrder.service.price.replace("AED", "").trim()) / 3.6725
+    ).toFixed(2)}
+    onClose={() => setPaymentOpen(false)}
+  />
+)}
 
         <ProviderDetailsModal
   isOpen={showProviderModal}
