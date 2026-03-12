@@ -209,17 +209,327 @@
 
 
 
+// const functions = require("firebase-functions");
+// const admin = require("firebase-admin");
+
+// // Initialize Firebase Admin
+// admin.initializeApp();
+
+// // Firestore & Messaging references
+// const db = admin.firestore();
+// const messaging = admin.messaging();
+
+// // 🔹 Import Realtime Database triggers from v1 to fix functions.database.ref issue
+// const { database } = require("firebase-functions/v1");
+
+// /* ======================================================
+//    1️⃣ NEW ORDER → Notify ALL providers
+//    ====================================================== */
+// exports.newOrderNotification = database.ref("/orders/{orderId}")
+//   .onCreate(async (snapshot, context) => {
+//     const order = snapshot.val();
+//     if (!order) return null;
+
+//     try {
+//       // Fetch all providers from Firestore
+//       const providerSnap = await db
+//         .collection("users")
+//         .where("role", "==", "provider")
+//         .get();
+
+//       // Collect tokens from all devices of all providers
+//       const tokens = providerSnap.docs
+//         .flatMap(doc => doc.data()?.fcmTokens || [])
+//         .filter(Boolean);
+
+//       if (!tokens.length) {
+//         console.log("No provider tokens found.");
+//         return null;
+//       }
+
+//       // Send multicast notification
+//       return messaging.sendMulticast({
+//         tokens,
+//         notification: {
+//           title: "New Order 🆕",
+//           body: `New order for ${order?.service?.title || "a service"} is available!`,
+//         },
+//         data: {
+//           orderId: context.params.orderId,
+//           type: "NEW_ORDER",
+//         },
+//       });
+
+//     } catch (error) {
+//       console.error("Error sending new order notification:", error);
+//       return null;
+//     }
+//   });
+
+// /* ======================================================
+//    2️⃣ ORDER UPDATES → Customer + Provider notifications
+//    ====================================================== */
+// exports.orderUpdateNotifications = database.ref("/orders/{orderId}")
+//   .onUpdate(async (change, context) => {
+//     const before = change.before.val() || {};
+//     const after = change.after.val() || {};
+
+//     if (!after) return null;
+
+//     try {
+//       const customerId = after.userId;
+//       const providerId = after.providerId;
+
+//       // ---------- FETCH CUSTOMER TOKENS ----------
+//       const customerSnap = customerId
+//         ? await db.collection("users").doc(customerId).get()
+//         : null;
+//       const customerTokens = customerSnap?.exists
+//         ? customerSnap.data()?.fcmTokens || []
+//         : [];
+
+//       // ---------- FETCH PROVIDER TOKENS ----------
+//       const providerSnap = providerId
+//         ? await db.collection("users").doc(providerId).get()
+//         : null;
+//       const providerTokens = providerSnap?.exists
+//         ? providerSnap.data()?.fcmTokens || []
+//         : [];
+//       const providerName = providerSnap?.data()?.name || "Provider";
+
+//       const serviceTitle = after?.service?.title || "your service";
+
+//       // ---------- CUSTOMER NOTIFICATIONS ----------
+//       if (before.status !== "ACCEPTED" && after.status === "ACCEPTED" && customerTokens.length > 0) {
+//         await messaging.sendMulticast({
+//           tokens: customerTokens,
+//           notification: {
+//             title: "Order Accepted ✅",
+//             body: `${providerName} accepted your order.`,
+//           },
+//           data: { orderId: context.params.orderId, type: "ORDER_ACCEPTED" },
+//         });
+//       }
+//       else if (before.status !== "IN_PROGRESS" && after.status === "IN_PROGRESS" && customerTokens.length > 0) {
+//         await messaging.sendMulticast({
+//           tokens: customerTokens,
+//           notification: {
+//             title: "Service Started 🧼",
+//             body: `${serviceTitle} is now in progress.`,
+//           },
+//           data: { orderId: context.params.orderId, type: "SERVICE_STARTED" },
+//         });
+//       }
+//       else if (before.status !== "COMPLETED" && after.status === "COMPLETED" && customerTokens.length > 0) {
+//         await messaging.sendMulticast({
+//           tokens: customerTokens,
+//           notification: {
+//             title: "Service Completed 🎉",
+//             body: `${serviceTitle} has been completed.`,
+//           },
+//           data: { orderId: context.params.orderId, type: "SERVICE_COMPLETED" },
+//         });
+//       }
+//       else if (before.status !== "CANCELLED" && after.status === "CANCELLED" && customerTokens.length > 0) {
+//         await messaging.sendMulticast({
+//           tokens: customerTokens,
+//           notification: {
+//             title: "Order Cancelled ❌",
+//             body: `${serviceTitle} was cancelled.`,
+//           },
+//           data: { orderId: context.params.orderId, type: "ORDER_CANCELLED" },
+//         });
+//       }
+
+//       // ---------- PROVIDER PAYMENT NOTIFICATIONS ----------
+//       if (before.payment_status !== "PAID" && after.payment_status === "PAID" && providerTokens.length > 0) {
+//         await messaging.sendMulticast({
+//           tokens: providerTokens,
+//           notification: {
+//             title: "Payment Received 💰",
+//             body: "Customer has completed payment.",
+//           },
+//           data: { orderId: context.params.orderId, type: "PAYMENT_RECEIVED" },
+//         });
+//       }
+
+//       return null;
+
+//     } catch (error) {
+//       console.error("Error sending update notification:", error);
+//       return null;
+//     }
+//   });
+
+
+
+
+
+
+
+
+// const functions = require("firebase-functions");
+// const admin = require("firebase-admin");
+
+// admin.initializeApp();
+
+// const db = admin.firestore();
+// const messaging = admin.messaging();
+
+// // 🔹 Import Realtime Database triggers from v1
+// const { database } = require("firebase-functions/v1");
+
+// /* ======================================================
+//    1️⃣ NEW ORDER → Notify ALL providers
+//    ====================================================== */
+// exports.newOrderNotification = database.ref("/orders/{orderId}")
+//   .onCreate(async (snapshot, context) => {
+//     const order = snapshot.val();
+//     if (!order) return null;
+
+//     try {
+//       const providerSnap = await db
+//         .collection("users")
+//         .where("role", "==", "provider")
+//         .get();
+
+//       // ✅ Collect all tokens from all provider devices and clean them
+//       const tokens = providerSnap.docs
+//         .flatMap(doc => doc.data()?.fcmTokens || [])
+//         .filter(token => typeof token === 'string' && token.length > 0);
+
+//       if (!tokens.length) {
+//         console.log("No provider tokens found.");
+//         return null;
+//       }
+
+//       // ✅ Send notifications to all tokens
+//       return messaging.sendMulticast({
+//         tokens,
+//         notification: {
+//           title: "New Order 🆕",
+//           body: `New order for ${order?.service?.title || "a service"} is available!`,
+//         },
+//         data: {
+//           orderId: context.params.orderId,
+//           type: "NEW_ORDER",
+//         },
+//       });
+
+//     } catch (error) {
+//       console.error("Error sending new order notification:", error);
+//       return null;
+//     }
+//   });
+
+// /* ======================================================
+//    2️⃣ ORDER UPDATES → Customer + Provider notifications
+//    ====================================================== */
+// exports.orderUpdateNotifications = database.ref("/orders/{orderId}")
+//   .onUpdate(async (change, context) => {
+//     const before = change.before.val() || {};
+//     const after = change.after.val() || {};
+
+//     if (!after) return null;
+
+//     try {
+//       const customerId = after.userId;
+//       const providerId = after.providerId;
+
+//       // ---------- FETCH CUSTOMER TOKENS ----------
+//       const customerSnap = customerId ? await db.collection("users").doc(customerId).get() : null;
+//       const customerTokens = customerSnap?.exists
+//         ? (customerSnap.data()?.fcmTokens || []).filter(token => typeof token === 'string' && token.length > 0)
+//         : [];
+
+//       // ---------- FETCH PROVIDER TOKENS ----------
+//       const providerSnap = providerId ? await db.collection("users").doc(providerId).get() : null;
+//       const providerTokens = providerSnap?.exists
+//         ? (providerSnap.data()?.fcmTokens || []).filter(token => typeof token === 'string' && token.length > 0)
+//         : [];
+//       const providerName = providerSnap?.data()?.name || "Provider";
+
+//       const serviceTitle = after?.service?.title || "your service";
+
+//       // ---------- CUSTOMER NOTIFICATIONS ----------
+//       if (before.status !== "ACCEPTED" && after.status === "ACCEPTED" && customerTokens.length > 0) {
+//         await messaging.sendMulticast({
+//           tokens: customerTokens,
+//           notification: {
+//             title: "Order Accepted ✅",
+//             body: `${providerName} accepted your order.`,
+//           },
+//           data: { orderId: context.params.orderId, type: "ORDER_ACCEPTED" },
+//         });
+//       }
+//       else if (before.status !== "IN_PROGRESS" && after.status === "IN_PROGRESS" && customerTokens.length > 0) {
+//         await messaging.sendMulticast({
+//           tokens: customerTokens,
+//           notification: {
+//             title: "Service Started 🧼",
+//             body: `${serviceTitle} is now in progress.`,
+//           },
+//           data: { orderId: context.params.orderId, type: "SERVICE_STARTED" },
+//         });
+//       }
+//       else if (before.status !== "COMPLETED" && after.status === "COMPLETED" && customerTokens.length > 0) {
+//         await messaging.sendMulticast({
+//           tokens: customerTokens,
+//           notification: {
+//             title: "Service Completed 🎉",
+//             body: `${serviceTitle} has been completed.`,
+//           },
+//           data: { orderId: context.params.orderId, type: "SERVICE_COMPLETED" },
+//         });
+//       }
+//       else if (before.status !== "CANCELLED" && after.status === "CANCELLED" && customerTokens.length > 0) {
+//         await messaging.sendMulticast({
+//           tokens: customerTokens,
+//           notification: {
+//             title: "Order Cancelled ❌",
+//             body: `${serviceTitle} was cancelled.`,
+//           },
+//           data: { orderId: context.params.orderId, type: "ORDER_CANCELLED" },
+//         });
+//       }
+
+//       // ---------- PROVIDER PAYMENT NOTIFICATIONS ----------
+//       if (before.payment_status !== "PAID" && after.payment_status === "PAID" && providerTokens.length > 0) {
+//         await messaging.sendMulticast({
+//           tokens: providerTokens,
+//           notification: {
+//             title: "Payment Received 💰",
+//             body: "Customer has completed payment.",
+//           },
+//           data: { orderId: context.params.orderId, type: "PAYMENT_RECEIVED" },
+//         });
+//       }
+
+//       return null;
+
+//     } catch (error) {
+//       console.error("Error sending update notification:", error);
+//       return null;
+//     }
+//   });
+
+
+
+
+
+
+
+
+
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
-// Initialize Firebase Admin
 admin.initializeApp();
 
-// Firestore & Messaging references
 const db = admin.firestore();
 const messaging = admin.messaging();
 
-// 🔹 Import Realtime Database triggers from v1 to fix functions.database.ref issue
+// 🔹 Import Realtime Database triggers from v1
 const { database } = require("firebase-functions/v1");
 
 /* ======================================================
@@ -231,25 +541,24 @@ exports.newOrderNotification = database.ref("/orders/{orderId}")
     if (!order) return null;
 
     try {
-      // Fetch all providers from Firestore
+      // Fetch all providers
       const providerSnap = await db
         .collection("users")
         .where("role", "==", "provider")
         .get();
 
-      // Collect tokens from all devices of all providers
       const tokens = providerSnap.docs
         .flatMap(doc => doc.data()?.fcmTokens || [])
-        .filter(Boolean);
+        .filter(token => typeof token === 'string' && token.length > 0);
 
       if (!tokens.length) {
         console.log("No provider tokens found.");
         return null;
       }
 
-      // Send multicast notification
-      return messaging.sendMulticast({
-        tokens,
+      // Send notifications to all provider tokens
+      const promises = tokens.map(token => messaging.send({
+        token,
         notification: {
           title: "New Order 🆕",
           body: `New order for ${order?.service?.title || "a service"} is available!`,
@@ -258,7 +567,12 @@ exports.newOrderNotification = database.ref("/orders/{orderId}")
           orderId: context.params.orderId,
           type: "NEW_ORDER",
         },
-      });
+      }));
+
+      await Promise.all(promises);
+
+      console.log(`Sent new order notifications to ${tokens.length} tokens.`);
+      return null;
 
     } catch (error) {
       console.error("Error sending new order notification:", error);
@@ -273,7 +587,6 @@ exports.orderUpdateNotifications = database.ref("/orders/{orderId}")
   .onUpdate(async (change, context) => {
     const before = change.before.val() || {};
     const after = change.after.val() || {};
-
     if (!after) return null;
 
     try {
@@ -281,78 +594,92 @@ exports.orderUpdateNotifications = database.ref("/orders/{orderId}")
       const providerId = after.providerId;
 
       // ---------- FETCH CUSTOMER TOKENS ----------
-      const customerSnap = customerId
-        ? await db.collection("users").doc(customerId).get()
-        : null;
+      const customerSnap = customerId ? await db.collection("users").doc(customerId).get() : null;
       const customerTokens = customerSnap?.exists
-        ? customerSnap.data()?.fcmTokens || []
+        ? (customerSnap.data()?.fcmTokens || []).filter(token => typeof token === 'string' && token.length > 0)
         : [];
 
       // ---------- FETCH PROVIDER TOKENS ----------
-      const providerSnap = providerId
-        ? await db.collection("users").doc(providerId).get()
-        : null;
+      const providerSnap = providerId ? await db.collection("users").doc(providerId).get() : null;
       const providerTokens = providerSnap?.exists
-        ? providerSnap.data()?.fcmTokens || []
+        ? (providerSnap.data()?.fcmTokens || []).filter(token => typeof token === 'string' && token.length > 0)
         : [];
       const providerName = providerSnap?.data()?.name || "Provider";
 
       const serviceTitle = after?.service?.title || "your service";
 
       // ---------- CUSTOMER NOTIFICATIONS ----------
-      if (before.status !== "ACCEPTED" && after.status === "ACCEPTED" && customerTokens.length > 0) {
-        await messaging.sendMulticast({
-          tokens: customerTokens,
-          notification: {
-            title: "Order Accepted ✅",
-            body: `${providerName} accepted your order.`,
-          },
-          data: { orderId: context.params.orderId, type: "ORDER_ACCEPTED" },
-        });
+      const customerPromises = [];
+
+      if (before.status !== "ACCEPTED" && after.status === "ACCEPTED") {
+        customerTokens.forEach(token => customerPromises.push(
+          messaging.send({
+            token,
+            notification: {
+              title: "Order Accepted ✅",
+              body: `${providerName} accepted your order.`,
+            },
+            data: { orderId: context.params.orderId, type: "ORDER_ACCEPTED" },
+          })
+        ));
       }
-      else if (before.status !== "IN_PROGRESS" && after.status === "IN_PROGRESS" && customerTokens.length > 0) {
-        await messaging.sendMulticast({
-          tokens: customerTokens,
-          notification: {
-            title: "Service Started 🧼",
-            body: `${serviceTitle} is now in progress.`,
-          },
-          data: { orderId: context.params.orderId, type: "SERVICE_STARTED" },
-        });
+      if (before.status !== "IN_PROGRESS" && after.status === "IN_PROGRESS") {
+        customerTokens.forEach(token => customerPromises.push(
+          messaging.send({
+            token,
+            notification: {
+              title: "Service Started 🧼",
+              body: `${serviceTitle} is now in progress.`,
+            },
+            data: { orderId: context.params.orderId, type: "SERVICE_STARTED" },
+          })
+        ));
       }
-      else if (before.status !== "COMPLETED" && after.status === "COMPLETED" && customerTokens.length > 0) {
-        await messaging.sendMulticast({
-          tokens: customerTokens,
-          notification: {
-            title: "Service Completed 🎉",
-            body: `${serviceTitle} has been completed.`,
-          },
-          data: { orderId: context.params.orderId, type: "SERVICE_COMPLETED" },
-        });
+      if (before.status !== "COMPLETED" && after.status === "COMPLETED") {
+        customerTokens.forEach(token => customerPromises.push(
+          messaging.send({
+            token,
+            notification: {
+              title: "Service Completed 🎉",
+              body: `${serviceTitle} has been completed.`,
+            },
+            data: { orderId: context.params.orderId, type: "SERVICE_COMPLETED" },
+          })
+        ));
       }
-      else if (before.status !== "CANCELLED" && after.status === "CANCELLED" && customerTokens.length > 0) {
-        await messaging.sendMulticast({
-          tokens: customerTokens,
-          notification: {
-            title: "Order Cancelled ❌",
-            body: `${serviceTitle} was cancelled.`,
-          },
-          data: { orderId: context.params.orderId, type: "ORDER_CANCELLED" },
-        });
+      if (before.status !== "CANCELLED" && after.status === "CANCELLED") {
+        customerTokens.forEach(token => customerPromises.push(
+          messaging.send({
+            token,
+            notification: {
+              title: "Order Cancelled ❌",
+              body: `${serviceTitle} was cancelled.`,
+            },
+            data: { orderId: context.params.orderId, type: "ORDER_CANCELLED" },
+          })
+        ));
       }
+
+      await Promise.all(customerPromises);
 
       // ---------- PROVIDER PAYMENT NOTIFICATIONS ----------
-      if (before.payment_status !== "PAID" && after.payment_status === "PAID" && providerTokens.length > 0) {
-        await messaging.sendMulticast({
-          tokens: providerTokens,
-          notification: {
-            title: "Payment Received 💰",
-            body: "Customer has completed payment.",
-          },
-          data: { orderId: context.params.orderId, type: "PAYMENT_RECEIVED" },
-        });
+      const providerPromises = [];
+      if (before.payment_status !== "PAID" && after.payment_status === "PAID") {
+        providerTokens.forEach(token => providerPromises.push(
+          messaging.send({
+            token,
+            notification: {
+              title: "Payment Received 💰",
+              body: "Customer has completed payment.",
+            },
+            data: { orderId: context.params.orderId, type: "PAYMENT_RECEIVED" },
+          })
+        ));
       }
 
+      await Promise.all(providerPromises);
+
+      console.log(`Customer notifications sent: ${customerTokens.length}, Provider notifications sent: ${providerTokens.length}`);
       return null;
 
     } catch (error) {
