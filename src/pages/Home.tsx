@@ -7,7 +7,7 @@ import {
   IonCol,
   useIonViewWillEnter,
   IonModal,
-  IonButton,IonAlert
+  IonButton,IonAlert,IonSpinner
 } from "@ionic/react";
 import styled from "styled-components";
 import Header from "../components/Header";
@@ -23,7 +23,9 @@ import SearchingModal from "../components/SearchingModal";
 import OneSignal from 'onesignal-cordova-plugin';
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig"; // make sure this exists
-
+import {seedAppConfig} from '../components/seedServices'
+import { getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
 
 
@@ -106,87 +108,87 @@ const Price = styled.p`
   text-align: center;
 `;
 
-const services = [
-  {
-    category: "Car Wash Cleaning",
-    items: [
+// const services = [
+//   {
+//     category: "Car Wash Cleaning",
+//     items: [
  
-      {
-        icon: "🚘",
-        title: "4x / month",
-        desc: "Premium monthly plan with deeper cleaning (4 visits per month)",
-        price: "AED 50",
-      },
-      {
-        icon: "🚘",
-        title: "8x / month",
-        desc: "Premium monthly plan with deeper cleaning (8 visits per month)",
-        price: "AED 80",
-      },
-      {
-        icon: "🚘",
-        title: "12x / month",
-        desc: "Ultimate monthly plan for daily use cars (12 visits per month)",
-        price: "AED 100",
-      },
+//       {
+//         icon: "🚘",
+//         title: "4x / month",
+//         desc: "Premium monthly plan with deeper cleaning (4 visits per month)",
+//         price: "AED 50",
+//       },
+//       {
+//         icon: "🚘",
+//         title: "8x / month",
+//         desc: "Premium monthly plan with deeper cleaning (8 visits per month)",
+//         price: "AED 80",
+//       },
+//       {
+//         icon: "🚘",
+//         title: "12x / month",
+//         desc: "Ultimate monthly plan for daily use cars (12 visits per month)",
+//         price: "AED 100",
+//       },
     
-    ],
-  },
-  {
-    category: "Gardening Cleaning",
-    items: [
-      {
-        icon: "🌿",
-        title: "2x weekly",
-        desc: "Weekly garden maintenance with watering and leaf clearing",
-        price: "AED 100",
-      },
-      {
-        icon: "🌱",
-        title: "3x weekly",
-        desc: "Weekly care with cutting, trimming, and cleaning services",
-        price: "AED 150",
-      },
-      {
-        icon: "🌳",
-        title: "Daily (small)",
-        desc: "Daily garden maintenance for small gardens (size-based pricing)",
-        price: "AED 200",
-      },
+//     ],
+//   },
+//   {
+//     category: "Gardening Cleaning",
+//     items: [
+//       {
+//         icon: "🌿",
+//         title: "2x weekly",
+//         desc: "Weekly garden maintenance with watering and leaf clearing",
+//         price: "AED 100",
+//       },
+//       {
+//         icon: "🌱",
+//         title: "3x weekly",
+//         desc: "Weekly care with cutting, trimming, and cleaning services",
+//         price: "AED 150",
+//       },
+//       {
+//         icon: "🌳",
+//         title: "Daily (small)",
+//         desc: "Daily garden maintenance for small gardens (size-based pricing)",
+//         price: "AED 200",
+//       },
      
-    ],
-  },
-  {
-    category: "Home & Office Cleaning",
-    items: [
-      {
-        icon: "🏠",
-        title: "Per hour",
-        desc: "Professional cleaning per hour without materials (customer supplies)",
-        price: "AED 25",
-      },
-      {
-        icon: "🧹",
-        title: "Per hour",
-        desc: "Hourly cleaning with premium materials included in the price",
-        price: "AED 35",
-      },
-    ],
-  },
+//     ],
+//   },
+//   {
+//     category: "Home & Office Cleaning",
+//     items: [
+//       {
+//         icon: "🏠",
+//         title: "Per hour",
+//         desc: "Professional cleaning per hour without materials (customer supplies)",
+//         price: "AED 25",
+//       },
+//       {
+//         icon: "🧹",
+//         title: "Per hour",
+//         desc: "Hourly cleaning with premium materials included in the price",
+//         price: "AED 35",
+//       },
+//     ],
+//   },
  
-  {
-    category: "Handyman Services",
-    items: [
-      {
-        icon: "🔧",
-        title: "4x / month",
-        desc: "Subscription package for regular handyman work (monthly plan)",
-        price: "AED 420",
-      },
+//   {
+//     category: "Handyman Services",
+//     items: [
+//       {
+//         icon: "🔧",
+//         title: "4x / month",
+//         desc: "Subscription package for regular handyman work (monthly plan)",
+//         price: "AED 420",
+//       },
 
-    ],
-  },
-];
+//     ],
+//   },
+// ];
 
 
 const DashboardHome: React.FC = () => {
@@ -204,11 +206,38 @@ showAlert, setShowAlert
 } = useApp();
 const [showNoBookingAlert, setShowNoBookingAlert] = useState(false);
 const [hasActiveBooking, setHasActiveBooking] = useState(false);
+const [services, setServices] = useState<any[]>([]);
+const [loadingServices, setLoadingServices] = useState(true);
+
+
+useEffect(() => {
+  const unsubscribe = onSnapshot(collection(db, "app_services"), (snapshot) => {
+    const servicesData: any[] = [];
+
+    snapshot.forEach((doc) => {
+      servicesData.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
+
+    // sort categories
+    servicesData.sort((a, b) => a.order - b.order);
+
+    setServices(servicesData);
+    setLoadingServices(false);
+  });
+
+  return () => unsubscribe();
+}, []);
 
 
 
 
-  
+
+  useEffect(() => {
+  // seedAppConfig();
+}, []);
 
 
 const { user, loading } = useAuth();
@@ -417,34 +446,37 @@ const handleAlertOk = () => {
           <Subtitle>Click any service card to start booking</Subtitle>
 
 
-          {services.map((category) => (
-            <div key={category.category}>
-              <CategoryTitle>{category.category}</CategoryTitle>
-              <IonGrid>
-                <IonRow>
-                  {category.items.map((item, idx) => (
-                    <IonCol size="4" key={idx}>
-                      <Card
- onClick={() => {
-  setSelectedService(item);
-  setIsOpen(true);
-}}
-
->
-  <div>
-    <Emoji>{item.icon}</Emoji>
-    <CardTitle>{item.title}</CardTitle>
+       {loadingServices ? (
+  <div style={{display:"flex",justifyContent:"center",marginTop:"40px"}}>
+    <IonSpinner name="crescent" />
   </div>
-  <Price>{item.price}</Price>
-</Card>
-
-                    </IonCol>
-                  ))}
-                </IonRow>
-              </IonGrid>
-            </div>
+) : (
+  services.map((category) => (
+    <div key={category.id}>
+      <CategoryTitle>{category.category}</CategoryTitle>
+      <IonGrid>
+        <IonRow>
+          {category.items.map((item:any, idx:number) => (
+            <IonCol size="4" key={idx}>
+              <Card
+                onClick={() => {
+                  setSelectedService(item);
+                  setIsOpen(true);
+                }}
+              >
+                <div>
+                  <Emoji>{item.icon}</Emoji>
+                  <CardTitle>{item.title}</CardTitle>
+                </div>
+                <Price>{item.price}</Price>
+              </Card>
+            </IonCol>
           ))}
-
+        </IonRow>
+      </IonGrid>
+    </div>
+  ))
+)}
 
 
 
